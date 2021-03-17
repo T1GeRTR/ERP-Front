@@ -2,30 +2,20 @@
 
 const requestURL = 'http://localhost:8080/user/';
 
+var getUsers;
+
 function sendRequest(method, url, body = null) {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.open(method, url);
-
-        xhr.responseType = 'json';
-
-        xhr.onload = () => {
-            if (xhr.status >= 400) {
-                console.error(xhr.response);
-            } else {
-                document.write(xhr.response);
-            }
-        }
-
-        xhr.onerror = () => {
-            document.write("ERROR: " + xhr.response)
-        }
-
-        xhr.send();
+    return fetch(url).then(response => {
+        return response.json();
     })
 }
 
 sendRequest('GET', requestURL)
-    .then(data => console.log(data))
+    .then(data => getUsers = data)
     .catch(err => console.log(err));
+
+$(document).ready(function () {
+    $.each(getUsers, function (index, i) {
+        $('#htList').append("<li>*" + " TEST " + i.id + ", " + i.firstname + ", " + i.lastname + ", " + i.email + " " + "</li>");
+    })
+}());
